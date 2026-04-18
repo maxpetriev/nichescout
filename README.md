@@ -2,7 +2,11 @@
 
 **AI market research that reads X and Reddit so you don't have to.**
 
-Type a market question. In a few minutes you get a hypothesis, a full ICP profile, a go-to-market strategy, and hand-picked posts that prove it — all sourced from real conversations happening right now.
+LLMs are trained on data from months ago. The niche you're about to enter may have already exploded — or died — since then. AI moves so fast that even a few weeks of lag means you're building on stale assumptions.
+
+And the place where trends are born first is X. Except X actively blocks bots. So you can't just scrape it.
+
+NicheScout cracks that. It drives a real Chrome browser logged in as you, reads live X threads and Reddit conversations, and hands the raw signal to Claude — which turns it into a hypothesis, a full ICP profile, and a go-to-market strategy. In minutes, not weeks.
 
 Runs entirely on your Mac. Your X credentials and API key never leave your machine.
 
