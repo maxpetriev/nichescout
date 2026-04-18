@@ -1,0 +1,11 @@
+node_modules/
+dist/
+out/
+.env
+.x-session.json
+.chrome-profile/
+digests/
+traces/
+debug-*.png
+debug*.ts
+*.enc

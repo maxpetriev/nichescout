@@ -1,0 +1,33 @@
+{
+  "name": "niche-scout",
+  "version": "1.0.0",
+  "description": "AI-powered niche research for solopreneurs",
+  "main": "out/main/index.js",
+  "scripts": {
+    "cli": "tsx run.ts",
+    "dev": "ELECTRON_RUN_AS_NODE= electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40",
+    "@tailwindcss/oxide-darwin-arm64": "^4.2.2",
+    "dotenv": "^16",
+    "playwright": "^1.48",
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4",
+    "electron": "^33",
+    "electron-vite": "^2",
+    "tailwindcss": "^4",
+    "tsx": "^4",
+    "typescript": "^5",
+    "vite": "^5"
+  }
+}
