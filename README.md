@@ -102,31 +102,6 @@ On first launch, open **Settings**, enter your X credentials, and save. They're 
 
 ---
 
-## CLI mode
-
-```bash
-npm run cli "what's going on in AI agent infra right now"
-npm run cli "productivity tools for remote teams" both
-```
-
-Output saved to `traces/` (raw log) and `digests/` (markdown report).
-
----
-
-## Tech stack
-
-| Layer | Tech |
-|---|---|
-| Desktop shell | Electron 33 |
-| UI | React 19 + Tailwind CSS v4 |
-| Build | electron-vite + Vite 5 |
-| AI | Anthropic SDK — `claude-opus-4-7` + `claude-sonnet-4-6` |
-| Browser automation | Playwright (persistent Chrome profile) |
-| Credential storage | Electron `safeStorage` → macOS Keychain |
-| Language | TypeScript (strict) |
-
----
-
 ## License
 
 MIT
