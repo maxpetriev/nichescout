@@ -455,12 +455,10 @@ You MUST call save_result with structured output.`,
         if (block.type !== 'tool_use') continue;
         if (block.name === 'save_result') {
           result = { prompt, ...(block.input as Omit<ResearchResult, 'prompt'>) };
-          // Save markdown digest for CLI
-          if (!emit) {
-            const digestFile = path.join(DIGESTS_DIR, `${TODAY}.md`);
-            fs.writeFileSync(digestFile, formatResultAsMarkdown(result));
-            cliOut(`\n-> Digest saved to ${digestFile}\n`, emit);
-          }
+          // Always save markdown digest (CLI prints path; desktop silently saves)
+          const digestFile = path.join(DIGESTS_DIR, `${TODAY}.md`);
+          fs.writeFileSync(digestFile, formatResultAsMarkdown(result));
+          if (!emit) cliOut(`\n-> Digest saved to ${digestFile}\n`, emit);
           toolResults.push({ type: 'tool_result', tool_use_id: block.id, content: 'Result saved.' });
         }
       }

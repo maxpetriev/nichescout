@@ -3,9 +3,10 @@ import Home from './views/Home'
 import Running from './views/Running'
 import Results from './views/Results'
 import Settings from './views/Settings'
+import History from './views/History'
 import type { AgentEvent, ResearchResult } from '../../../lib/types'
 
-type View = 'home' | 'running' | 'results' | 'settings'
+type View = 'home' | 'running' | 'results' | 'settings' | 'history'
 
 const api = (window as any).api
 
@@ -49,7 +50,10 @@ export default function App() {
         <Settings onSave={() => { setHasCreds(true); setView('home') }} onBack={hasCreds ? () => setView('home') : undefined} />
       )}
       {view === 'home' && (
-        <Home onStart={startResearch} onSettings={() => setView('settings')} />
+        <Home onStart={startResearch} onSettings={() => setView('settings')} onHistory={() => setView('history')} lastResult={result ?? undefined} onResumeResult={() => setView('results')} />
+      )}
+      {view === 'history' && (
+        <History onBack={() => setView('home')} onOpen={r => { setResult(r); setView('results') }} />
       )}
       {view === 'running' && (
         <Running prompt={prompt} events={events} onResult={() => result && setView('results')} />

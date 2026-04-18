@@ -76,6 +76,30 @@ ipcMain.handle('creds:has', async () => {
   return fs.existsSync(CREDS_PATH)
 })
 
+// ── History ───────────────────────────────────────────────────────────────────
+
+const RESULTS_DIR = path.join(app.getPath('userData'), 'results')
+
+ipcMain.handle('history:list', async () => {
+  if (!fs.existsSync(RESULTS_DIR)) return []
+  return fs.readdirSync(RESULTS_DIR)
+    .filter(f => f.endsWith('.json'))
+    .sort().reverse()
+    .flatMap(f => {
+      try {
+        const data = JSON.parse(fs.readFileSync(path.join(RESULTS_DIR, f), 'utf8'))
+        const ts = parseInt(f.replace('.json', ''))
+        return [{ id: f.replace('.json', ''), prompt: data.prompt, date: new Date(ts).toLocaleString(), confidence: data.hypothesis?.confidence ?? 'medium' }]
+      } catch { return [] }
+    })
+})
+
+ipcMain.handle('history:get', async (_, id: string) => {
+  const filePath = path.join(RESULTS_DIR, `${id}.json`)
+  if (!fs.existsSync(filePath)) return null
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
+})
+
 // ── Research ──────────────────────────────────────────────────────────────────
 
 let researchRunning = false
@@ -88,6 +112,10 @@ ipcMain.on('research:start', async (event, { prompt, platforms }: { prompt: stri
 
   const emit = (e: AgentEvent) => {
     win.webContents.send('research:event', e)
+    if (e.type === 'result') {
+      fs.mkdirSync(RESULTS_DIR, { recursive: true })
+      fs.writeFileSync(path.join(RESULTS_DIR, `${Date.now()}.json`), JSON.stringify(e.data, null, 2))
+    }
   }
 
   try {

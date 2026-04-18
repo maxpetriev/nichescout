@@ -18,5 +18,9 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.on('research:event', (_, e) => cb(e))
   },
   offEvents: () => ipcRenderer.removeAllListeners('research:event'),
+
+  // History
+  listHistory: () => ipcRenderer.invoke('history:list'),
+  getHistory: (id: string) => ipcRenderer.invoke('history:get', id),
 })
 

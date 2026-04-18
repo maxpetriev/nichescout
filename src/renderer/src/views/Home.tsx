@@ -1,11 +1,18 @@
 import { useState } from 'react'
+import type { ResearchResult } from '../../../../lib/types'
 
 export default function Home({
   onStart,
   onSettings,
+  onHistory,
+  lastResult,
+  onResumeResult,
 }: {
   onStart: (prompt: string, platforms: ('x' | 'reddit')[]) => void
   onSettings: () => void
+  onHistory: () => void
+  lastResult?: ResearchResult
+  onResumeResult?: () => void
 }) {
   const [prompt, setPrompt] = useState('')
   const [platforms, setPlatforms] = useState<Set<'x' | 'reddit'>>(new Set(['x']))
@@ -27,7 +34,13 @@ export default function Home({
   return (
     <div className="flex flex-col h-full">
       {/* Titlebar */}
-      <div className="titlebar flex items-end justify-end px-5 pb-3">
+      <div className="titlebar flex items-end justify-end gap-1 px-5 pb-3">
+        <button onClick={onHistory} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[#E8E8ED] transition-colors" title="Past research">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#6E6E73" strokeWidth="1.5">
+            <circle cx="10" cy="10" r="8"/>
+            <path d="M10 5v5l3 3"/>
+          </svg>
+        </button>
         <button onClick={onSettings} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-[#E8E8ED] transition-colors">
           <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#6E6E73" strokeWidth="1.5">
             <circle cx="10" cy="10" r="3"/>
@@ -90,6 +103,15 @@ export default function Home({
             Start Research →
           </button>
           <p className="text-center text-[12px] text-[#C7C7CC] mt-3">⌘↵ to start</p>
+
+          {lastResult && onResumeResult && (
+            <button
+              onClick={onResumeResult}
+              className="w-full mt-3 py-2.5 rounded-xl text-[13px] font-medium text-[#0071E3] bg-[#EEF5FF] hover:bg-[#E0EDFF] transition-colors"
+            >
+              ← Resume last result: "{lastResult.prompt.slice(0, 60)}{lastResult.prompt.length > 60 ? '…' : ''}"
+            </button>
+          )}
         </div>
       </div>
     </div>
