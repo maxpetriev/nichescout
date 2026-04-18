@@ -1,57 +1,115 @@
 # NicheScout
 
-**AI-powered market research for solopreneurs** — find trending niches, validate ideas, and get a full GTM strategy in minutes.
+**AI market research that reads X and Reddit so you don't have to.**
 
-NicheScout is a macOS desktop app that sends autonomous AI agents into X (Twitter) and Reddit to scrape real conversations, then synthesises the signal into a structured research report: hypothesis, ICP profile, and go-to-market strategy.
+Type a market question. In a few minutes you get a hypothesis, a full ICP profile, a go-to-market strategy, and hand-picked posts that prove it — all sourced from real conversations happening right now.
+
+Runs entirely on your Mac. Your X credentials and API key never leave your machine.
 
 ---
 
-## Screenshots
+## See it in action
 
-> _Home screen — enter your research prompt_
+### 1 · Ask your question
 
-![Home](docs/screenshots/home.png)
+![Home screen](home.png)
 
-> _Live research feed — watch agents plan, search, and collect in real time_
+### 2 · Watch agents collect real data live
 
-![Running](docs/screenshots/running.png)
+![Live collection feed](running.png)
 
-> _Results — hypothesis, ICP profile, GTM strategy, supporting evidence_
+### 3 · Get a structured research report
 
-![Results](docs/screenshots/results.png)
+![Hypothesis, ICP profile, and GTM strategy](result1.png)
+
+![Supporting trends and evidence posts](result2.png)
+
+---
+
+## What you get
+
+| Section | Output |
+|---|---|
+| **Hypothesis** | One-sentence thesis + confidence rating |
+| **ICP Profile** | Who they are, exact pain points, where they hang out, what they'll pay |
+| **GTM Strategy** | Positioning, top channel, launch move, 2-week validation test |
+| **Supporting Trends** | Patterns the agent spotted across hundreds of posts |
+| **Evidence** | Real posts with explanations of why each one matters |
 
 ---
 
 ## How it works
 
-Research runs in three phases, each powered by a different Claude model:
+Three phases, each using the right model for the job:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Phase 1 · Plan         claude-opus-4-7                     │
-│  Reads your prompt, designs a targeted search strategy      │
-│  Outputs: list of X queries + Reddit subreddits to hit      │
-├─────────────────────────────────────────────────────────────┤
-│  Phase 2 · Collect      claude-sonnet-4-6  (6× cheaper)     │
-│  Executes every search via a real Chrome browser            │
-│  Bypasses bot detection with a persistent Chrome profile    │
-│  Collects raw posts from X and Reddit                       │
-├─────────────────────────────────────────────────────────────┤
-│  Phase 3 · Synthesise   claude-opus-4-7                     │
-│  Reads all collected posts                                  │
-│  Produces a structured JSON report via tool-calling         │
-└─────────────────────────────────────────────────────────────┘
+Phase 1 · Plan          claude-opus-4-7
+  Reads your prompt, designs targeted search queries
+  Output: X searches + Reddit subreddits to hit
+
+Phase 2 · Collect       claude-sonnet-4-6  (6× cheaper)
+  Drives a real Chrome browser to execute every search
+  Collects raw posts from X and Reddit
+
+Phase 3 · Synthesise    claude-opus-4-7
+  Reads all collected posts
+  Produces structured JSON via tool-calling
 ```
 
-The result is a structured report with:
+The expensive, repetitive collection loop runs on Sonnet to keep costs low. Only planning and synthesis — where reasoning quality matters — use Opus.
 
-| Section | What you get |
+---
+
+## Your credentials never leave your machine
+
+This is a **native macOS desktop app**, not a web service. Nothing is sent to a server you don't control.
+
+| What | Where it lives |
 |---|---|
-| **Hypothesis** | One-sentence thesis + confidence rating (low / medium / high) |
-| **ICP Profile** | Who they are, pain points, channels, budget, exact vocabulary |
-| **GTM Strategy** | Positioning, top channel, launch move, 2-week validation test, timeline |
-| **Supporting Trends** | Recurring themes pulled from the data |
-| **Evidence** | Hand-picked posts with explanations of why each matters |
+| X (Twitter) username & password | Encrypted in **macOS Keychain** via Electron `safeStorage` |
+| Chrome session cookies | Local `.chrome-profile/` folder on your disk |
+| Anthropic API key | Your local `.env` file |
+| Research results | Local `digests/` folder |
+
+There is no backend. There is no account. There is no cloud sync. The app talks to two places: X/Reddit (to collect data) and Anthropic (to reason about it). That's it.
+
+---
+
+## Setup
+
+**Prerequisites:** macOS, Node.js 20+, Google Chrome, Anthropic API key
+
+```bash
+git clone https://github.com/maxpetriev/nichescout.git
+cd nichescout
+npm install
+```
+
+Add your API key:
+
+```bash
+cp .env.example .env
+# paste your ANTHROPIC_API_KEY into .env
+```
+
+Run:
+
+```bash
+npm run dev
+```
+
+On first launch, open **Settings**, enter your X credentials, and save. They're encrypted into your Keychain immediately. A Chrome window will open once for manual login — after that, the session is cached and login is automatic.
+
+---
+
+## CLI mode
+
+```bash
+npm run cli "what's going on in AI agent infra right now"
+npm run cli "productivity tools for remote teams" both
+```
+
+Output saved to `traces/` (raw log) and `digests/` (markdown report).
 
 ---
 
@@ -62,104 +120,10 @@ The result is a structured report with:
 | Desktop shell | Electron 33 |
 | UI | React 19 + Tailwind CSS v4 |
 | Build | electron-vite + Vite 5 |
-| AI | Anthropic SDK (`claude-opus-4-7` + `claude-sonnet-4-6`) |
+| AI | Anthropic SDK — `claude-opus-4-7` + `claude-sonnet-4-6` |
 | Browser automation | Playwright (persistent Chrome profile) |
-| Credential storage | Electron `safeStorage` (macOS Keychain) |
+| Credential storage | Electron `safeStorage` → macOS Keychain |
 | Language | TypeScript (strict) |
-
----
-
-## Setup
-
-### Prerequisites
-
-- macOS (uses Keychain for credential encryption)
-- Node.js 20+
-- Google Chrome installed (`playwright` uses `channel: 'chrome'`)
-- Anthropic API key
-
-### Install
-
-```bash
-git clone https://github.com/maxpetriev/nichescout.git
-cd nichescout
-npm install
-```
-
-### Configure
-
-```bash
-cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
-```
-
-### Run the desktop app
-
-```bash
-npm run dev
-```
-
-On first launch, the app opens the **Settings** screen. Enter your X (Twitter) credentials and save — they're encrypted in your macOS Keychain and never leave your machine.
-
-> **Note:** on first run, a Chrome window will open so you can complete the X login manually. After that, the session is cached in `.chrome-profile/` and login is automatic.
-
----
-
-## CLI mode
-
-You can also run research headlessly from the terminal:
-
-```bash
-npm run cli "what's going on in AI agent infra right now"
-# or target both platforms:
-npm run cli "productivity tools for remote teams" both
-```
-
-Output is saved to `traces/` (raw log) and `digests/` (markdown report).
-
----
-
-## Project structure
-
-```
-electron/
-  main/index.ts        # Electron main process — IPC, credentials, agent runner
-  preload/index.ts     # Context bridge — exposes window.api to renderer
-
-lib/
-  agent.ts             # All agent logic — three-phase loop, browser tools
-  types.ts             # Shared types (AgentEvent, ResearchResult)
-
-src/renderer/src/
-  App.tsx              # View state machine (home → running → results → settings)
-  views/
-    Home.tsx           # Prompt input + platform toggles
-    Running.tsx        # Live activity feed + phase indicator
-    Results.tsx        # Hypothesis, ICP, GTM, evidence cards
-    Settings.tsx       # Credential management
-
-run.ts                 # CLI entrypoint
-```
-
----
-
-## Architecture notes
-
-**Bot detection bypass** — X aggressively blocks Playwright's default fingerprint. The agent uses a persistent Chrome profile (`chromium.launchPersistentContext`), disables `AutomationControlled` flags, and masks `navigator.webdriver`. Once logged in manually the first time, the session cookie is reused forever.
-
-**Cost optimisation** — Phase 2 (the expensive, repetitive search loop) runs on `claude-sonnet-4-6` which is ~6× cheaper than Opus. Only planning and synthesis — where reasoning quality matters — use `claude-opus-4-7`.
-
-**Streaming events** — The agent emits typed `AgentEvent` objects as it runs. In Electron mode these flow over IPC (`webContents.send`) to the React renderer, driving the live activity feed.
-
----
-
-## Environment variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | Yes | Your Anthropic API key |
-| `X_USERNAME` | No | Loaded from saved credentials at runtime |
-| `X_PASSWORD` | No | Loaded from saved credentials at runtime |
 
 ---
 
